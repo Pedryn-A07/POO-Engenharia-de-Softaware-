@@ -18,14 +18,14 @@ class User:
     self.senha = senha
     self.CPF = CPF
 
-  def ConsultarLivro(Livro):
+  def ConsultarLivro(self, Livro):
     print(Livro.titulo)
     print(Livro.genero)
     print(Livro.autor)
     print(Livro.StatusDisponibilidade)
     print(Livro.identificador)
 
-  def PegarLivro(Livro):
+  def PegarLivro(self, Livro):
     if Livro.StatusDisponibilidade == "Disponível":
       Livro.StatusDisponibilidade = "Emprestado"
     elif Livro.StatusDisponibilidade == "Reservado":
@@ -37,13 +37,13 @@ class User:
     else:
       print("O livro escolhido não está disponível para empréstimo")
 
-  def ReservarLivro(Livro):
+  def ReservarLivro(self, Livro):
     if Livro.StatusDisponibilidade == "Disponível":
       Livro.StatusDisponibilidade = "Reservado"
     else:
       print("Este livro já está reservado")
 
-  def DevolverLivro(Livro):
+  def DevolverLivro(self, Livro):
     if Livro.StatusDisponibilidade == "Emprestado" or "Reservado":
       Livro.StatusDisponibilidade = "Disponível"
       print("Livro Devolvido")
@@ -60,6 +60,43 @@ def ListarLivros():
   for livro in Livro.ListaLivros:
     print(f"Título: {livro.titulo} | Autor: {livro.autor} | Status: {livro.StatusDisponibilidade} | Identificador: {livro.identificador}")
   print("-----------------------")
+
+def CadastrarLivro():
+    """Permite cadastrar um novo livro pelo terminal."""
+    print("\n--- Cadastro de Novo Livro ---")
+    titulo = input("Título: ").strip()
+    autor = input("Autor: ").strip()
+    genero = input("Gênero: ").strip()
+
+    status_inicial = "Disponível"
+    
+    # 2. Gerar um Identificador Único (baseado no total de livros + 1)
+    # Convertemos para string, pois seus IDs existentes ("1", "2", "3") são strings.
+    novo_identificador = str(len(Livro.ListaLivros) + 1) 
+
+    # 3. Passar TODOS os 5 argumentos para o construtor da classe Livro
+    novo = Livro(titulo, genero, autor, status_inicial, novo_identificador) 
+    
+    print(f"✅ Livro '{novo.titulo}' cadastrado com sucesso! ID: {novo.identificador}")
+
+def RealizarEmprestimo(usuario):
+    """Permite realizar o empréstimo de um livro pelo identificador."""
+    print("\n--- Realizar Empréstimo ---")
+    ListarLivros()
+
+    ident = input("Digite o identificador do livro que deseja emprestar: ").strip()
+    livro_encontrado = None
+
+    for livro in Livro.ListaLivros:
+        if livro.identificador == ident:
+            livro_encontrado = livro
+            break
+
+    if livro_encontrado:
+        usuario.PegarLivro(livro_encontrado)
+    else:
+        print("❌ Nenhum livro encontrado com esse identificador.")
+
 
 def menu_principal():
     """Exibe o menu principal e solicita a escolha do usuário."""
@@ -83,6 +120,8 @@ def menu_principal():
 
 def rodar_sistema():
     """Loop principal do sistema que exibe o menu e processa as escolhas."""
+    usuario = User("Robertinho", "12345678", "000.000.000-00")  # Usuário padrão de teste
+
     while True:
         opcao = menu_principal() 
 
@@ -95,12 +134,13 @@ def rodar_sistema():
             input("Pressione Enter para continuar...") 
         
         elif opcao == '3':
+            CadastrarLivro()
             print("\n--- Opção 3: Cadastro de Livro (A FAZER) ---")
             input("Pressione Enter para continuar...") 
 
         elif opcao == '4':
+            ListarLivros()
             print("\n--- Opção 4: Listagem de Livros ---")
-            ListarLivros() 
             input("Pressione Enter para continuar...")
         
         elif opcao == '5':
@@ -108,6 +148,7 @@ def rodar_sistema():
             input("Pressione Enter para continuar...")
             
         elif opcao == '6':
+            RealizarEmprestimo(usuario)
             print("\n--- Opção 6: Realizar Empréstimo (A FAZER) ---")
             input("Pressione Enter para continuar...")
 
