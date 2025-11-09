@@ -17,6 +17,7 @@ class User:
     self.nome = nome
     self.senha = senha
     self.CPF = CPF
+    User.ListaUsuarios.append(self)
 
   def ConsultarLivro(self, Livro):
     print(Livro.titulo)
@@ -61,6 +62,17 @@ def ListarLivros():
     print(f"Título: {livro.titulo} | Autor: {livro.autor} | Status: {livro.StatusDisponibilidade} | Identificador: {livro.identificador}")
   print("-----------------------")
 
+def ListarUsuarios():
+  """Lista todos os usuários cadastrados no sistema."""
+  print("\n--- LISTA DE USUÁRIOS CADASTRADOS ---")
+  
+  if not User.ListaUsuarios:
+      print("Nenhum usuário cadastrado.")
+  else:
+      for i, usuario in enumerate(User.ListaUsuarios): 
+          print(f"Usuário {i+1}: Nome: {usuario.nome} | CPF: {usuario.CPF}")       
+  print("--------------------------------------")
+
 def CadastrarLivro():
     """Permite cadastrar um novo livro pelo terminal."""
     print("\n--- Cadastro de Novo Livro ---")
@@ -97,6 +109,33 @@ def RealizarEmprestimo(usuario):
     else:
         print("❌ Nenhum livro encontrado com esse identificador.")
 
+def ContarLivrosPorStatus():
+  """Conta e exibe quantos livros existem para cada status."""
+  print("\n--- CONTAGEM DE LIVROS POR STATUS ---")
+  
+  contagem = {
+      "Disponível": 0,
+      "Emprestado": 0,
+      "Reservado": 0
+  }
+  status_outros = []
+  if not Livro.ListaLivros:
+      print("O acervo está vazio.")
+      return
+  for livro in Livro.ListaLivros:
+      status = livro.StatusDisponibilidade
+      if status in contagem:
+          contagem[status] += 1
+      else:
+          status_outros.append(status)
+
+  print(f"Livros Disponíveis: {contagem['Disponível']}")
+  print(f"Livros Emprestados: {contagem['Emprestado']}")
+  print(f"Livros Reservados: {contagem['Reservado']}")
+
+  if status_outros:
+      print(f"Status não categorizados encontrados: {set(status_outros)}")
+  print("-----------------------------------")
 
 def menu_principal():
     """Exibe o menu principal e solicita a escolha do usuário."""
@@ -130,7 +169,7 @@ def rodar_sistema():
             input("Pressione Enter para continuar...") 
 
         elif opcao == '2':
-            print("\n--- Opção 2: Listagem de Usuários (A FAZER) ---")
+            ListarUsuarios()
             input("Pressione Enter para continuar...") 
         
         elif opcao == '3':
@@ -153,7 +192,7 @@ def rodar_sistema():
             input("Pressione Enter para continuar...")
 
         elif opcao == '7':
-            print("\n--- Opção 7: Contagem de Livros por Status (A FAZER) ---")
+            ContarLivrosPorStatus()
             input("Pressione Enter para continuar...")
         
         elif opcao == '8':
