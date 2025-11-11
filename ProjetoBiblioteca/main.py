@@ -63,6 +63,22 @@ class User:
     else:
       print("O livro não está em sua posse.")
 
+class UserAdmin(User):
+    """Classe administrativa com privilégios de verificação e gerenciamento de usuários."""
+
+    def __init__(self, nome, senha, CPF):
+        super().__init__(nome, senha, CPF)  # Herda tudo da classe User
+
+    def VerificarRegistro(self, nome, CPF):
+        """Verifica se um usuário com determinado nome e CPF está cadastrado."""
+        for usuario in User.ListaUsuarios:
+            if usuario.nome == nome and usuario.CPF == CPF:
+                print(f"✅ Usuário '{nome}' encontrado! CPF: {CPF}")
+                return usuario
+        print(f"❌ Nenhum usuário encontrado com nome '{nome}' e CPF '{CPF}'.")
+        return None
+
+
 def autenticar_usuario():
     """Solicita os dados do usuário e valida o login."""
     print("\n--- LOGIN DE USUÁRIO ---")
