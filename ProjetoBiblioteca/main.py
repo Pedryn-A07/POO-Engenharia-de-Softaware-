@@ -13,11 +13,23 @@ Casmurro = Livro("Dom Casmurro", "Romance", "Machado de Assis", "Disponível", "
 Iliada = Livro("Iliada", "Épico", "Homero", "Disponível", "3")
 
 class User:
+  ListaUsuarios = []  # Lista compartilhada com todos os usuários
+
   def __init__(self, nome, senha, CPF):
     self.nome = nome
     self.senha = senha
     self.CPF = CPF
     User.ListaUsuarios.append(self)
+
+  @classmethod
+  def validar_usuario(cls, nome, senha, CPF):
+    """Valida o acesso de um usuário específico."""
+    for usuario in cls.ListaUsuarios:
+      if usuario.nome == nome and usuario.senha == senha and usuario.CPF == CPF:
+          print(f"\n✅ Acesso permitido! Bem-vindo(a), {usuario.nome}.")
+          return usuario
+    print("\n❌ Acesso negado. Dados incorretos.")
+    return None
 
   def ConsultarLivro(self, Livro):
     print(Livro.titulo)
@@ -50,6 +62,17 @@ class User:
       print("Livro Devolvido")
     else:
       print("O livro não está em sua posse.")
+
+def autenticar_usuario():
+    """Solicita os dados do usuário e valida o login."""
+    print("\n--- LOGIN DE USUÁRIO ---")
+    nome = input("Nome: ").strip()
+    senha = input("Senha: ").strip()
+    CPF = input("CPF: ").strip()
+
+    usuario_logado = User.validar_usuario(nome, senha, CPF)
+    return usuario_logado
+
 
 def ListarLivros():
   """Lista todos os livros no acervo com seus detalhes."""
@@ -159,7 +182,16 @@ def menu_principal():
 
 def rodar_sistema():
     """Loop principal do sistema que exibe o menu e processa as escolhas."""
-    usuario = User("Robertinho", "12345678", "000.000.000-00")  # Usuário padrão de teste
+
+    # Criação de usuários de exemplo
+    User("Robertinho", "12345678", "000.000.000-00")
+    User("Sophia", "abcd1234", "111.111.111-11")
+
+    # Autenticação antes de acessar o sistema
+    usuario = autenticar_usuario()
+    if not usuario:
+      print("Encerrando o sistema por falha de login.")
+      return
 
     while True:
         opcao = menu_principal() 
@@ -210,5 +242,3 @@ def rodar_sistema():
 
 if __name__ == "__main__":
     rodar_sistema()
-
-Paciente0 = User("Robertinho", "12345678", "000.000.000-00")
